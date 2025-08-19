@@ -1,0 +1,96 @@
+<!-- templates/featured.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serotonin Tournament Software - Featured Match</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700&family=MuseoModerno:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: transparent;
+            color: #f0f0f0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100vh;
+            padding-bottom: 2rem;
+        }
+        .match-container {
+            background-color: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid #E0B4B4;
+            box-shadow: 0 0 25px rgba(224, 180, 180, 0.7);
+            width: 1600px;
+            max-width: 95vw;
+        }
+        .player-card { background-color: rgba(31, 41, 55, 0.8); }
+        .info-panel { flex-shrink: 0; width: 300px; }
+        .logo-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto;
+            object-fit: cover;
+        }
+        @keyframes slideInFromBottom {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-in { animation: slideInFromBottom 0.6s ease-out forwards; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div id="featured-match-container"></div>
+    <script>
+        const container = document.getElementById('featured-match-container');
+        function renderFeaturedMatch(info, withAnimation = false) {
+            const match = info.featured_match;
+            const animationClass = withAnimation ? 'animate-slide-in' : '';
+            if (!match) {
+                container.innerHTML = `<div class="match-container rounded-xl p-8 text-center ${animationClass}"><h2 class="text-3xl font-bold text-gray-400">No match is currently featured.</h2><p class="text-gray-500 mt-2">Select a match from the control panel.</p></div>`;
+                return;
+            }
+
+            const validPlayers = match.players.filter(p => (p.trackmania_id || p.trackmania_name || p.name) && (p.trackmania_id || p.trackmania_name || p.name) !== 'TBD' && (p.trackmania_id || p.trackmania_name || p.name) !== 'BYE');
+            const createPlayerCard = (player) => {
+                const displayName = player.display_bracket_name || player.trackmania_name || player.name;
+                return `<div class="player-card rounded-lg p-4 flex-1 text-center min-w-0"><div class="flex justify-between items-center"><span class="text-xl text-gray-400">Seed ${player.seed || ''}</span><span class="text-4xl font-bold text-cyan-400">${player.score}</span></div><div class="text-4xl font-bold mt-2 text-left truncate" title="${displayName}">${displayName}</div></div>`;
+            };
+            const playersLayoutHtml = validPlayers.map(createPlayerCard).join('');
+            
+            // If a logo URL is provided, create an image tag. Otherwise, create an empty div to maintain spacing.
+            const logoHtml = info.logo_url 
+                ? `<img src="${info.logo_url}" alt="Tournament Logo" class="logo-image">`
+                : `<div class="w-[120px] h-[120px]"></div>`;
+
+            container.innerHTML = `
+                <div class="match-container rounded-xl p-4 ${animationClass} flex items-center gap-6">
+                    <div class="info-panel text-center">
+                        ${logoHtml}
+                        <h2 class="text-3xl font-bold mt-2 truncate">${info.tournament_name}</h2>
+                        <h3 class="text-xl text-purple-400">${match.roundName}</h3>
+                    </div>
+                    <div class="flex-grow flex justify-center items-stretch gap-4">
+                        ${playersLayoutHtml}
+                    </div>
+                </div>
+            `;
+        }
+        async function fetchData(withAnimation = false) {
+            try {
+                const response = await fetch('/api/status');
+                const state = await response.json();
+                renderFeaturedMatch(state.info, withAnimation);
+            } catch (error) {
+                console.error("Failed to fetch tournament status:", error);
+            }
+        }
+        fetchData(true);
+        setInterval(() => fetchData(false), 3000);
+    </script>
+</body>
+</html>

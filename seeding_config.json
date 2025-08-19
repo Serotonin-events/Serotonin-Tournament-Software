@@ -1,0 +1,308 @@
+{
+    "players": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32"
+    ],
+    "groups": {
+        "groupA": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16"
+        ],
+        "groupB": [
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32"
+        ]
+    },
+    "maps": [
+        "Cahokia",
+        "rouge",
+        "pretend",
+        "lindsey vohn",
+        "yoshiama"
+    ],
+    "scores": {
+        "1": {
+            "Cahokia": 100,
+            "rouge": 50,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "2": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "3": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "4": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "5": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "6": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "7": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "8": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "9": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "10": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "11": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "12": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "13": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "14": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "15": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "16": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "17": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "18": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "19": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "20": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "21": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "22": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "23": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "24": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "25": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "26": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "27": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "28": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "29": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "30": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "31": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        },
+        "32": {
+            "Cahokia": 0,
+            "rouge": 0,
+            "pretend": 0,
+            "lindsey vohn": 0,
+            "yoshiama": 0
+        }
+    },
+    "is_started": true
+}

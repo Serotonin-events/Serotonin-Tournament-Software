@@ -1,0 +1,1030 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serotonin Tournament Software</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        input[type="color"] { -webkit-appearance: none; border: none; width: 100%; height: 40px; border-radius: 0.5rem; cursor: pointer; }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid #4A5568; border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-4 sm:p-8">
+    <div class="max-w-screen-2xl mx-auto">
+        <header class="flex flex-wrap justify-between items-center mb-8 gap-4">
+            <h1 class="text-3xl font-bold text-cyan-400">Serotonin Tournament Software</h1>
+            <div class="flex items-center gap-2">
+                <button id="start-main-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-lg">Start Tournament</button>
+                <button id="stop-main-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg text-lg hidden">Stop Tournament</button>
+                <button id="reset-main-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg text-lg">Reset</button>
+            </div>
+            <div class="flex gap-4">
+                <a href="/timer" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg">Open Timer</a>
+                <a href="/featured" target="_blank" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg">Open Featured Match</a>
+                <a href="/stream" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">Open Bracket View</a>
+                <a href="/seeding_graphic" target="_blank" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg">Open Seeding Graphic</a>
+            </div>
+        </header>
+
+        <!-- Main View Toggle -->
+        <div class="mb-8 flex border-b border-gray-700">
+            <button id="show-main-btn" class="flex-1 py-3 px-6 text-lg font-bold border-b-4 border-cyan-400 text-cyan-400">Main Tournament</button>
+            <button id="show-seeding-btn" class="flex-1 py-3 px-6 text-lg font-bold border-b-4 border-transparent text-gray-400 hover:text-white">Seeding Tournament</button>
+        </div>
+
+        <!-- Main Tournament View -->
+        <div id="main-tournament-view">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div id="main-setup-section" class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <h2 class="text-2xl font-semibold mb-4">Main Tournament Setup</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="main-bracket-type-select" class="block mb-2 text-sm font-medium text-gray-300">Bracket Type</label>
+                                <select id="main-bracket-type-select" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                                    <option value="double_elimination">Double Elimination</option>
+                                    <option value="swiss">Swiss Group Stage (16 Players)</option>
+                                </select>
+                                        <div class="mt-4">
+            <!-- Trackmania API Integration -->
+            <div class="bg-gray-800 p-4 rounded-lg mb-4 border border-gray-600">
+                <h4 class="text-sm font-medium text-gray-300 mb-3">🚀 Trackmania API Integration</h4>
+                
+                <!-- Player Search -->
+                <div class="flex gap-2 mb-3">
+                    <input type="text" id="player-search" placeholder="Search by username or Trackmania ID..." 
+                           class="flex-1 bg-gray-700 border border-gray-600 text-white text-sm rounded p-2">
+                    <button type="button" id="search-btn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg">Search</button>
+                </div>
+                <div class="text-xs text-gray-500 mb-2">
+                    💡 You can search by username (e.g., "Wirtual") or Trackmania ID (e.g., "12345678-1234-1234-1234-123456789abc")
+                </div>
+                
+                <!-- Search Results -->
+                <div id="search-results" class="hidden space-y-2 max-h-32 overflow-y-auto">
+                    <!-- Search results will appear here -->
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="flex gap-2 mt-3">
+                    <button type="button" id="test-api-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-bold py-2 px-3 rounded-lg">🔧 Test Nadeo API</button>
+                    <button type="button" id="test-player-btn" class="bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold py-2 px-3 rounded-lg">🧪 Test Player Lookup</button>
+                    <button type="button" id="auto-seed-btn" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2 px-3 rounded-lg">🎯 Auto-Seed Top 16</button>
+                    <button type="button" id="import-top-32-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-3 rounded-lg">📥 Import Top 32</button>
+                    <button type="button" id="clear-all-btn" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 px-3 rounded-lg">🗑️ Clear All</button>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="text-sm font-medium text-gray-300">Tournament Players</h4>
+                <button type="button" id="add-player-btn" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg">+ Add Player</button>
+            </div>
+            <div id="players-container" class="space-y-3">
+                <!-- Player forms will be added here -->
+            </div>
+            <div class="mt-3 text-xs text-gray-400">
+                <p>• Add at least 4 players for double elimination</p>
+                <p>• Exactly 16 players required for Swiss format</p>
+                <p>• Trackmania ID and Username are required</p>
+                <p>• Display Name is optional (defaults to Username)</p>
+            </div>
+        </div>
+                            </div>
+                            <div>
+                                <label for="points-input" class="block mb-2 text-sm font-medium text-gray-300">Points to Advance</label>
+                                <input type="number" id="points-input" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                                <label for="final-points-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Points to Win (Finals)</label>
+                                <input type="number" id="final-points-input" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                                <button id="update-points-btn" class="mt-4 w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg">Update Point Values</button>
+                            </div>
+                        </div>
+                        <p id="main-error-message" class="text-red-400 mt-4"></p>
+                    </div>
+                    <div id="main-bracket-view" class="hidden mt-8">
+                        <!-- Main bracket content goes here -->
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Stream Settings</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="upper-title-input" class="block text-sm font-medium text-gray-300">Upper Title</label>
+                            <input type="text" id="upper-title-input" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5 mt-1">
+                        </div>
+                        <div>
+                            <label for="upper-color-input" class="block text-sm font-medium text-gray-300">Color</label>
+                            <input type="color" id="upper-color-input" class="w-full mt-1">
+                        </div>
+                        <div>
+                            <label for="lower-title-input" class="block text-sm font-medium text-gray-300">Lower Title</label>
+                            <input type="text" id="lower-title-input" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5 mt-1">
+                        </div>
+                        <div>
+                            <label for="lower-color-input" class="block text-sm font-medium text-gray-300">Color</label>
+                            <input type="color" id="lower-color-input" class="w-full mt-1">
+                        </div>
+                         <div>
+                            <label for="final-title-input" class="block text-sm font-medium text-gray-300">Final Title</label>
+                            <input type="text" id="final-title-input" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5 mt-1">
+                        </div>
+                        <div>
+                            <label for="final-color-input" class="block text-sm font-medium text-gray-300">Color</label>
+                            <input type="color" id="final-color-input" class="w-full mt-1">
+                        </div>
+                    </div>
+                    <hr class="my-4 border-gray-600">
+                    <label for="tournament-name-input" class="block mb-2 text-sm font-medium text-gray-300">Tournament Name</label>
+                    <input type="text" id="tournament-name-input" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                    <label for="logo-url-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Logo Image URL</label>
+                    <input type="text" id="logo-url-input" placeholder="https://example.com/logo.png" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                    <label for="text-color-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Stream Text Color</label>
+                    <input type="color" id="text-color-input" class="w-full">
+                    <label for="bg-color-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Stream BG Color</label>
+                    <input type="color" id="bg-color-input" class="w-full">
+                    <button id="update-info-btn" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg">Update Stream Info</button>
+                </div>
+
+                <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4">Timer Settings</h2>
+                    <label for="timer-minutes-input" class="block mb-2 text-sm font-medium text-gray-300">Set Minutes</label>
+                    <input type="number" id="timer-minutes-input" value="10" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                    <label for="timer-font-select" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Font</label>
+                    <select id="timer-font-select" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg p-2.5">
+                        <option value="Orbitron">Orbitron (Sci-Fi)</option>
+                        <option value="Inter">Inter (Modern)</option>
+                        <option value="Roboto Condensed">Roboto Condensed (Bold)</option>
+                        <option value="MuseoModerno">MuseoModerno (Stylish)</option>
+                    </select>
+                    <label for="timer-color-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Timer Color</label>
+                    <input type="color" id="timer-color-input" class="w-full" value="#8B5CF6">
+                    <label class="block mt-4 mb-2 text-sm font-medium text-gray-300">Position</label>
+                    <div class="grid grid-cols-2 gap-2" id="timer-position-btns">
+                        <button data-pos="top-left" class="bg-gray-600 hover:bg-gray-500 p-2 rounded-lg">Top-Left</button>
+                        <button data-pos="top-right" class="bg-gray-600 hover:bg-gray-500 p-2 rounded-lg">Top-Right</button>
+                        <button data-pos="center" class="bg-gray-600 hover:bg-gray-500 p-2 rounded-lg col-span-2">Center</button>
+                        <button data-pos="bottom-left" class="bg-gray-600 hover:bg-gray-500 p-2 rounded-lg">Bottom-Left</button>
+                        <button data-pos="bottom-right" class="bg-gray-600 hover:bg-gray-500 p-2 rounded-lg">Bottom-Right</button>
+                    </div>
+                    <button id="update-timer-btn" class="mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg">Update Timer</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seeding Tournament View -->
+        <div id="seeding-tournament-view" class="hidden">
+            <div id="seeding-setup-section" class="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-2xl font-semibold mb-4">Seeding Tournament Setup</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="seeding-players-input" class="block mb-2 text-sm font-medium text-gray-300">Player Names (one per line)</label>
+                        <textarea id="seeding-players-input" rows="16" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5"></textarea>
+                    </div>
+                    <div>
+                        <label for="maps-input" class="block mb-2 text-sm font-medium text-gray-300">Map Names (one per line)</label>
+                        <textarea id="maps-input" rows="5" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5"></textarea>
+                    </div>
+                    <div>
+                        <label for="seeding-advance-input" class="block mb-2 text-sm font-medium text-gray-300">Players to Advance (per group)</label>
+                        <input type="number" id="seeding-advance-input" value="8" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5">
+                        
+                        <label for="seeding-header-color-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Header Text Color</label>
+                        <input type="color" id="seeding-header-color-input" class="w-full">
+                        
+                        <label for="seeding-text-color-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Main Text Color</label>
+                        <input type="color" id="seeding-text-color-input" class="w-full">
+
+                        <label for="seeding-score-color-input" class="block mt-4 mb-2 text-sm font-medium text-gray-300">Score Text Color</label>
+                        <input type="color" id="seeding-score-color-input" class="w-full">
+
+                        <button id="update-seeding-config-btn" class="mt-4 w-full bg-teal-600 hover:bg-teal-700 font-bold py-2 px-4 rounded-lg">Update Seeding Config</button>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-4">
+                    <button id="start-seeding-btn" class="flex-1 bg-green-600 hover:bg-green-700 font-bold py-3 px-6 rounded-lg text-lg">Start Seeding</button>
+                    <button id="reset-seeding-btn" class="flex-1 bg-red-600 hover:bg-red-700 font-bold py-3 px-6 rounded-lg text-lg">Reset Seeding</button>
+                </div>
+            </div>
+            <div id="seeding-score-section" class="hidden">
+                <!-- Seeding score entry content goes here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        const showMainBtn = document.getElementById('show-main-btn');
+        const showSeedingBtn = document.getElementById('show-seeding-btn');
+        const mainTournamentView = document.getElementById('main-tournament-view');
+        const seedingTournamentView = document.getElementById('seeding-tournament-view');
+        const mainSetupSection = document.getElementById('main-setup-section');
+        const mainBracketView = document.getElementById('main-bracket-view');
+        const mainBracketTypeSelect = document.getElementById('main-bracket-type-select');
+        const mainPlayersInput = document.getElementById('main-players-input');
+        const startMainBtn = document.getElementById('start-main-btn');
+        const stopMainBtn = document.getElementById('stop-main-btn');
+        const resetMainBtn = document.getElementById('reset-main-btn');
+        const mainErrorMessage = document.getElementById('main-error-message');
+        const pointsInput = document.getElementById('points-input');
+        const finalPointsInput = document.getElementById('final-points-input');
+        const updatePointsBtn = document.getElementById('update-points-btn');
+        const seedingSetupSection = document.getElementById('seeding-setup-section');
+        const seedingScoreSection = document.getElementById('seeding-score-section');
+        const seedingPlayersInput = document.getElementById('seeding-players-input');
+        const mapsInput = document.getElementById('maps-input');
+        const startSeedingBtn = document.getElementById('start-seeding-btn');
+        const resetSeedingBtn = document.getElementById('reset-seeding-btn');
+        const seedingAdvanceInput = document.getElementById('seeding-advance-input');
+        const updateSeedingConfigBtn = document.getElementById('update-seeding-config-btn');
+        const upperTitleInput = document.getElementById('upper-title-input');
+        const upperColorInput = document.getElementById('upper-color-input');
+        const lowerTitleInput = document.getElementById('lower-title-input');
+        const lowerColorInput = document.getElementById('lower-color-input');
+        const finalTitleInput = document.getElementById('final-title-input');
+        const finalColorInput = document.getElementById('final-color-input');
+        const timerMinutesInput = document.getElementById('timer-minutes-input');
+        const timerFontSelect = document.getElementById('timer-font-select');
+        const timerColorInput = document.getElementById('timer-color-input');
+        const timerPositionBtns = document.getElementById('timer-position-btns');
+        const updateTimerBtn = document.getElementById('update-timer-btn');
+        const tournamentNameInput = document.getElementById('tournament-name-input');
+        const updateInfoBtn = document.getElementById('update-info-btn');
+        const textColorInput = document.getElementById('text-color-input');
+        const bgColorInput = document.getElementById('bg-color-input');
+        const logoUrlInput = document.getElementById('logo-url-input');
+        const seedingHeaderColorInput = document.getElementById('seeding-header-color-input');
+        const seedingTextColorInput = document.getElementById('seeding-text-color-input');
+        const seedingScoreColorInput = document.getElementById('seeding-score-color-input');
+        const addPlayerBtn = document.getElementById('add-player-btn');
+        const playersContainer = document.getElementById('players-container');
+
+        // Player management functions
+        function createPlayerForm(playerIndex = 0, playerData = null) {
+            const playerDiv = document.createElement('div');
+            playerDiv.className = 'bg-gray-700 p-3 rounded-lg border border-gray-600';
+            playerDiv.dataset.playerIndex = playerIndex;
+            
+            const isFirstPlayer = playerIndex === 0;
+            const removeBtn = isFirstPlayer ? '' : `<button type="button" class="remove-player-btn bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-2 rounded ml-2">×</button>`;
+            
+            playerDiv.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-400 mb-1">Player ${playerIndex + 1}</label>
+                        <input type="text" class="player-id-input w-full bg-gray-600 border border-gray-500 text-white text-sm rounded p-2" 
+                               placeholder="Trackmania ID (Required)" 
+                               value="${playerData?.trackmania_id || ''}" required>
+                        <div class="text-xs text-gray-500 mt-1">Format: 12345678-1234-1234-1234-123456789abc</div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-400 mb-1">Seed</label>
+                        <input type="number" class="player-seed-input w-full bg-gray-600 border border-gray-500 text-white text-sm rounded p-2" 
+                               placeholder="Seed" 
+                               value="${playerData?.seed || playerIndex + 1}" min="1" required>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-400 mb-1">Username (Required)</label>
+                        <input type="text" class="player-name-input w-full bg-gray-600 border border-gray-500 text-white text-sm rounded p-2" 
+                               placeholder="Trackmania username" 
+                               value="${playerData?.trackmania_name || ''}" required>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-400 mb-1">Display Name (Optional)</label>
+                        <input type="text" class="player-display-input w-full bg-gray-600 border border-gray-500 text-white text-sm rounded p-2" 
+                               placeholder="Custom name for brackets (defaults to username)" 
+                               value="${playerData?.display_bracket_name || ''}">
+                    </div>
+                    ${removeBtn}
+                </div>
+            `;
+            
+            // Add remove button functionality
+            const removeBtnElement = playerDiv.querySelector('.remove-player-btn');
+            if (removeBtnElement) {
+                removeBtnElement.addEventListener('click', () => removePlayer(playerDiv));
+            }
+            
+            return playerDiv;
+        }
+
+        function addPlayer() {
+            const playerCount = playersContainer.children.length;
+            const playerForm = createPlayerForm(playerCount);
+            playersContainer.appendChild(playerForm);
+        }
+
+        function removePlayer(playerDiv) {
+            playerDiv.remove();
+            // Reorder remaining players
+            Array.from(playersContainer.children).forEach((div, index) => {
+                div.dataset.playerIndex = index;
+                const playerLabel = div.querySelector('label');
+                if (playerLabel) {
+                    playerLabel.textContent = `Player ${index + 1}`;
+                }
+                const seedInput = div.querySelector('.player-seed-input');
+                if (seedInput && !seedInput.value) {
+                    seedInput.value = index + 1;
+                }
+            });
+        }
+
+        function getPlayersFromForms() {
+            const players = [];
+            Array.from(playersContainer.children).forEach((div, index) => {
+                const idInput = div.querySelector('.player-id-input');
+                const nameInput = div.querySelector('.player-name-input');
+                const displayInput = div.querySelector('.player-display-input');
+                const seedInput = div.querySelector('.player-seed-input');
+                
+                if (idInput && idInput.value.trim() && nameInput && nameInput.value.trim()) {
+                    players.push({
+                        trackmania_id: idInput.value.trim(),
+                        trackmania_name: nameInput.value.trim(),
+                        display_bracket_name: displayInput?.value.trim() || nameInput.value.trim(),
+                        seed: parseInt(seedInput?.value || index + 1, 10)
+                    });
+                }
+            });
+            return players;
+        }
+
+        // Initialize with 4 default player forms
+        function initializePlayerForms() {
+            playersContainer.innerHTML = '';
+            for (let i = 0; i < 4; i++) {
+                addPlayer();
+            }
+        }
+
+        // Trackmania API Integration Functions
+        const trackmaniaApi = {
+            search: (query) => fetch('/api/trackmania/search', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({query})
+            }).then(res => res.json()),
+            
+            getPlayer: (username) => fetch(`/api/trackmania/player/${username}`).then(res => res.json()),
+            
+            getRankings: (limit = 100) => fetch(`/api/trackmania/rankings?limit=${limit}`).then(res => res.json()),
+            
+            autoSeed: (playerCount, useRankings = true) => fetch('/api/trackmania/auto-seed', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({player_count: playerCount, use_rankings: useRankings})
+            }).then(res => res.json())
+        };
+
+        // Search functionality
+        let searchTimeout;
+        document.getElementById('player-search').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            
+            if (query.length >= 2) {
+                searchTimeout = setTimeout(() => {
+                    performPlayerSearch(query);
+                }, 300);
+            } else {
+                hideSearchResults();
+            }
+        });
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const query = document.getElementById('player-search').value.trim();
+            if (query.length >= 2) {
+                performPlayerSearch(query);
+            }
+        });
+
+        async function performPlayerSearch(query) {
+            try {
+                const results = document.getElementById('search-results');
+                results.innerHTML = '<div class="text-gray-400 text-sm">Searching...</div>';
+                results.classList.remove('hidden');
+                
+                const response = await trackmaniaApi.search(query);
+                
+                if (response.success && response.players.length > 0) {
+                    results.innerHTML = response.players.map(player => {
+                        const isIdSearch = player.trackmania_id === response.query;
+                        const searchType = isIdSearch ? 'ID Search' : 'Username Search';
+                        const displayName = player.display_bracket_name || player.trackmania_name || 'Unknown';
+                        
+                        return `
+                            <div class="bg-gray-700 p-2 rounded cursor-pointer hover:bg-gray-600 player-search-result" 
+                                 data-player='${JSON.stringify(player)}'>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-blue-300">${displayName}</span>
+                                    <span class="text-xs text-gray-400">${searchType}</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">Username: ${player.trackmania_name || 'N/A'}</div>
+                                <div class="text-xs text-gray-500">ID: ${player.trackmania_id}</div>
+                                ${player.rank ? `<div class="text-xs text-green-400 mt-1">Rank: ${player.rank}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Add click handlers
+                    document.querySelectorAll('.player-search-result').forEach(el => {
+                        el.addEventListener('click', () => {
+                            const playerData = JSON.parse(el.dataset.player);
+                            addPlayerFromSearch(playerData);
+                            hideSearchResults();
+                            document.getElementById('player-search').value = '';
+                        });
+                    });
+                } else {
+                    results.innerHTML = '<div class="text-gray-400 text-sm">No players found</div>';
+                }
+            } catch (error) {
+                console.error('Search failed:', error);
+                results.innerHTML = '<div class="text-red-400 text-sm">Search failed</div>';
+            }
+        }
+
+        function hideSearchResults() {
+            document.getElementById('search-results').classList.add('hidden');
+        }
+
+        function addPlayerFromSearch(playerData) {
+            // Find the first empty player form or add a new one
+            let targetForm = null;
+            Array.from(playersContainer.children).forEach(form => {
+                const idInput = form.querySelector('.player-id-input');
+                if (idInput && !idInput.value.trim()) {
+                    targetForm = form;
+                }
+            });
+            
+            if (!targetForm) {
+                targetForm = addPlayer();
+            }
+            
+            // Fill in the form
+            const idInput = targetForm.querySelector('.player-id-input');
+            const nameInput = targetForm.querySelector('.player-name-input');
+            const displayInput = targetForm.querySelector('.player-display-input');
+            const seedInput = targetForm.querySelector('.player-seed-input');
+            
+            if (idInput) idInput.value = playerData.trackmania_id;
+            if (nameInput) nameInput.value = playerData.trackmania_name;
+            if (displayInput) displayInput.value = playerData.display_bracket_name || playerData.trackmania_name;
+            if (seedInput) seedInput.value = playerData.seed || '';
+        }
+
+        // Auto-seed functionality
+        document.getElementById('auto-seed-btn').addEventListener('click', async () => {
+            try {
+                const response = await trackmaniaApi.autoSeed(16, true);
+                if (response.success) {
+                    // Clear existing players
+                    playersContainer.innerHTML = '';
+                    
+                    // Add auto-seeded players
+                    response.players.forEach(player => {
+                        const playerForm = createPlayerForm(playersContainer.children.length, player);
+                        playersContainer.appendChild(playerForm);
+                    });
+                    
+                    showMessage('Successfully auto-seeded top 16 players!', 'success');
+                } else {
+                    showMessage('Auto-seeding failed: ' + response.error, 'error');
+                }
+            } catch (error) {
+                console.error('Auto-seeding failed:', error);
+                showMessage('Auto-seeding failed. Please try again.', 'error');
+            }
+        });
+
+        // Import top 32 functionality
+        document.getElementById('import-top-32-btn').addEventListener('click', async () => {
+            try {
+                const response = await trackmaniaApi.autoSeed(32, true);
+                if (response.success) {
+                    // Clear existing players
+                    playersContainer.innerHTML = '';
+                    
+                    // Add top 32 players
+                    response.players.forEach(player => {
+                        const playerForm = createPlayerForm(playersContainer.children.length, player);
+                        playersContainer.appendChild(playerForm);
+                    });
+                    
+                    showMessage('Successfully imported top 32 players!', 'success');
+                } else {
+                    showMessage('Import failed: ' + response.error, 'error');
+                }
+            } catch (error) {
+                console.error('Import failed:', error);
+                showMessage('Import failed. Please try again.', 'error');
+            }
+        });
+
+        // Test API functionality
+        document.getElementById('test-api-btn').addEventListener('click', async () => {
+            try {
+                showMessage('Testing API connection...', 'info');
+                const response = await fetch('/api/trackmania/test');
+                const data = await response.json();
+                
+                if (data.success && data.api_working) {
+                    showMessage('✅ API is working! Status: ' + data.status_code, 'success');
+                    console.log('API Test Success:', data);
+                } else {
+                    showMessage('❌ API test failed: ' + (data.error || 'Unknown error'), 'error');
+                    console.log('API Test Failed:', data);
+                }
+            } catch (error) {
+                console.error('API test failed:', error);
+                showMessage('❌ API test failed: ' + error.message, 'error');
+            }
+        });
+
+        // Test Player Lookup functionality
+        document.getElementById('test-player-btn').addEventListener('click', async () => {
+            const searchInput = document.getElementById('player-search');
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                showMessage('Please enter a username or ID to test', 'error');
+                return;
+            }
+            
+            try {
+                showMessage('Testing player lookup...', 'info');
+                const response = await fetch(`/api/trackmania/test-player/${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const message = `✅ Player lookup test:\nQuery: ${data.query}\nTreated as: ${data.treated_as}\nResult: ${JSON.stringify(data.result, null, 2)}`;
+                    showMessage(`✅ Player lookup test completed! Check console for details.`, 'success');
+                    console.log('Player Lookup Test Success:', data);
+                    console.log('Full Result:', data.result);
+                } else {
+                    showMessage('❌ Player lookup test failed: ' + (data.error || 'Unknown error'), 'error');
+                    console.log('Player Lookup Test Failed:', data);
+                }
+            } catch (error) {
+                console.error('Player lookup test failed:', error);
+                showMessage('❌ Player lookup test failed: ' + error.message, 'error');
+            }
+        });
+
+        // Clear all functionality
+        document.getElementById('clear-all-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all players?')) {
+                playersContainer.innerHTML = '';
+                showMessage('All players cleared.', 'info');
+            }
+        });
+
+        // Helper function to show messages
+        function showMessage(message, type = 'info') {
+            const messageEl = document.createElement('div');
+            messageEl.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${
+                type === 'success' ? 'bg-green-600' : 
+                type === 'error' ? 'bg-red-600' : 
+                'bg-blue-600'
+            }`;
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.remove();
+            }, 3000);
+        }
+
+        const mainApi = {
+            getStatus: () => fetch('/api/status').then(res => res.json()),
+            start: (players, bracket_type) => fetch('/api/start', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({players, bracket_type}) }).then(res => res.json()),
+            reset: () => fetch('/api/reset', { method: 'POST' }),
+            stop: () => fetch('/api/stop', { method: 'POST' }),
+            updateConfig: (points_to_advance, points_for_finals) => fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ points_to_advance, points_for_finals }) }).then(res => res.json()),
+            updateInfo: (data) => fetch('/api/update_info', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(res => res.json()),
+            updateTimer: (data) => fetch('/api/update_timer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).then(res => res.json()),
+            updateMatch: (bracket_type, round_index, match_index, scores) => fetch('/api/update_match', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bracket_type, round_index, match_index, scores }) }).then(res => res.json()),
+            advanceSwissStage: () => fetch('/api/advance_swiss_stage', { method: 'POST' }).then(res => res.json()),
+            goBackSwiss: () => fetch('/api/go_back_swiss', { method: 'POST' }).then(res => res.json()),
+        };
+
+        const seedingApi = {
+            getStatus: () => fetch('/api/seeding/status').then(res => res.json()),
+            start: (players, maps) => fetch('/api/seeding/start', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({players, maps}) }).then(res => res.json()),
+            updateScore: (player, map_name, score) => fetch('/api/seeding/update_scores', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({player, map_name, score}) }),
+            reset: () => fetch('/api/seeding/reset', { method: 'POST' }),
+            updateConfig: (data) => fetch('/api/seeding/update_config', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) }).then(res => res.json()),
+        };
+
+        showMainBtn.addEventListener('click', () => {
+            mainTournamentView.classList.remove('hidden');
+            seedingTournamentView.classList.add('hidden');
+            showMainBtn.classList.add('border-cyan-400', 'text-cyan-400');
+            showSeedingBtn.classList.remove('border-cyan-400', 'text-cyan-400');
+            showSeedingBtn.classList.add('border-transparent', 'text-gray-400');
+        });
+
+        showSeedingBtn.addEventListener('click', () => {
+            seedingTournamentView.classList.remove('hidden');
+            mainTournamentView.classList.add('hidden');
+            showSeedingBtn.classList.add('border-cyan-400', 'text-cyan-400');
+            showMainBtn.classList.remove('border-cyan-400', 'text-cyan-400');
+            showMainBtn.classList.add('border-transparent', 'text-gray-400');
+        });
+
+        startMainBtn.addEventListener('click', async () => {
+            const players = getPlayersFromForms();
+            const bracketType = mainBracketTypeSelect.value;
+            
+            if (players.length < 4) { 
+                mainErrorMessage.textContent = 'Please enter at least 4 players.'; 
+                return; 
+            }
+            if (bracketType === 'swiss' && players.length !== 16) {
+                mainErrorMessage.textContent = 'Swiss format requires exactly 16 players.';
+                return;
+            }
+            
+            // Validate that all players have required fields
+            const invalidPlayers = players.filter(p => !p.trackmania_id.trim() || !p.trackmania_name.trim());
+            if (invalidPlayers.length > 0) {
+                mainErrorMessage.textContent = 'All players must have Trackmania ID and Username.';
+                return;
+            }
+            
+            mainErrorMessage.textContent = '';
+            const response = await mainApi.start(players, bracketType);
+            if (response.error) { mainErrorMessage.textContent = response.error; } 
+            else { renderMain(response); }
+        });
+        stopMainBtn.addEventListener('click', async () => {
+            if(confirm('Stop Main Tournament?')) { await mainApi.stop(); location.reload(); }
+        });
+        resetMainBtn.addEventListener('click', async () => {
+            if(confirm('Reset Main Tournament?')) { await mainApi.reset(); location.reload(); }
+        });
+        updatePointsBtn.addEventListener('click', async () => { 
+            const points = parseInt(pointsInput.value, 10);
+            const finalPoints = parseInt(finalPointsInput.value, 10);
+            await mainApi.updateConfig(points, finalPoints);
+            alert(`Point values updated!`);
+        });
+
+        function renderMain(state) {
+            if (state.is_started) {
+                mainSetupSection.classList.add('hidden');
+                mainBracketView.classList.remove('hidden');
+                startMainBtn.classList.add('hidden');
+                stopMainBtn.classList.remove('hidden');
+
+                if (state.bracket_type === 'swiss') {
+                    renderSwissView(state);
+                } else {
+                    renderDoubleElimView(state);
+                }
+            } else {
+                mainSetupSection.classList.remove('hidden');
+                mainBracketView.classList.add('hidden');
+                startMainBtn.classList.remove('hidden');
+                stopMainBtn.classList.add('hidden');
+                
+                // Populate player forms if there are existing players
+                if (state.players && state.players.length > 0) {
+                    playersContainer.innerHTML = '';
+                    state.players.forEach((player, index) => {
+                        const playerForm = createPlayerForm(index, player);
+                        playersContainer.appendChild(playerForm);
+                    });
+                } else {
+                    // Initialize with default forms
+                    initializePlayerForms();
+                }
+            }
+            pointsInput.value = state.config.points_to_advance;
+            finalPointsInput.value = state.config.points_for_finals;
+        }
+
+        function renderDoubleElimView(state){
+            const bracket = state.bracket;
+            const view = document.getElementById('main-bracket-view');
+            view.innerHTML = `
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
+                    <div>
+                        <h2 class="text-3xl font-bold text-center mb-4 text-cyan-300">Upper Bracket</h2>
+                        <div id="upper-bracket-container" class="flex space-x-4 overflow-x-auto pb-4"></div>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 class="text-3xl font-bold text-center mb-4 text-yellow-300">Grand Final</h2>
+                        <div id="grand-final-container" class="flex justify-center items-center flex-grow"></div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-center mb-4 text-orange-300">Lower Bracket</h2>
+                    <div id="lower-bracket-container" class="flex space-x-4 overflow-x-auto pb-4"></div>
+                </div>`;
+            
+            renderBracket(document.getElementById('upper-bracket-container'), bracket.upper, 'upper', state);
+            renderBracket(document.getElementById('lower-bracket-container'), bracket.lower, 'lower', state);
+            if (bracket.grand_final) {
+                renderGrandFinal(document.getElementById('grand-final-container'), bracket.grand_final, state);
+            }
+        }
+
+        function renderBracket(container, bracketData, bracketType, state) {
+            container.innerHTML = '';
+            if (!bracketData || !bracketData.rounds) return;
+            bracketData.rounds.forEach((round, roundIndex) => {
+                const roundEl = document.createElement('div');
+                roundEl.className = 'flex flex-col justify-around space-y-8 min-w-[280px]';
+                roundEl.innerHTML = `<h3 class="text-lg font-bold text-center text-gray-400">${round.name}</h3>`;
+                const matchesContainer = document.createElement('div');
+                matchesContainer.className = 'flex flex-col justify-around flex-grow space-y-6';
+                round.matches.forEach((match, matchIndex) => {
+                    matchesContainer.appendChild(createMatchElement(match, bracketType, roundIndex, matchIndex, state));
+                });
+                roundEl.appendChild(matchesContainer);
+                container.appendChild(roundEl);
+            });
+            addUpdateListeners(state);
+        }
+
+        function renderGrandFinal(container, finalData, state) {
+            container.innerHTML = '';
+            const match = finalData.matches[0];
+            const matchEl = createMatchElement(match, 'grand_final', 0, 0, state);
+            matchEl.classList.add('max-w-md', 'w-full');
+            container.appendChild(matchEl);
+            addUpdateListeners(state);
+        }
+
+        function createMatchElement(match, bracketType, roundIndex, matchIndex, state) {
+            const matchEl = document.createElement('div');
+            matchEl.className = `bg-gray-800 p-3 rounded-lg shadow-md border border-gray-700`;
+            const winnerIds = match.winners.map(w => w.trackmania_id || w.trackmania_name || w.name);
+            let playersHtml = match.players.map((player) => {
+                const displayName = player.display_bracket_name || player.trackmania_name || player.name || 'TBD';
+                const isWinner = winnerIds.includes(player.trackmania_id || player.trackmania_name || player.name);
+                return `
+                <div class="flex items-center justify-between p-4 rounded-lg ${isWinner ? 'bg-green-700' : 'bg-gray-700'} min-h-[60px]">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <span class="text-sm font-bold text-gray-400 mr-3 w-6 text-center flex-shrink-0">${player.seed || ''}</span>
+                        <span class="font-semibold text-base truncate" title="${displayName}">${displayName}</span>
+                    </div>
+                    <input type="number" class="w-20 bg-gray-600 text-white text-center rounded p-2 text-sm score-input" value="${player.score}" data-bracket="${bracketType}" data-round="${roundIndex}" data-match="${matchIndex}" ${match.is_complete ? 'disabled' : ''}>
+                </div>`;
+            }).join('<div class="my-3"></div>');
+            let buttonsHtml = '';
+            if (!match.is_complete) {
+                buttonsHtml += `<button class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md text-sm update-match-btn" data-bracket="${bracketType}" data-round="${roundIndex}" data-match="${matchIndex}">Update</button>`;
+            } else {
+                buttonsHtml = `<p class="text-center mt-3 text-green-400 font-bold text-sm">Complete</p>`;
+            }
+            matchEl.innerHTML = `<h4 class="text-xs text-gray-400 mb-3 text-center">${bracketType !== 'grand_final' ? `Match ${matchIndex + 1}` : 'Final Match'}</h4><div class="space-y-3">${playersHtml}</div>${buttonsHtml}`;
+            return matchEl;
+        }
+        
+        function renderSwissView(state) {
+            const bracket = state.bracket;
+            const view = document.getElementById('main-bracket-view');
+            view.innerHTML = '';
+            const stageTitle = bracket.stage === 'seeding' ? `Seeding Stage - Swiss Round ${bracket.round}` : `Group Stage - Swiss Round ${bracket.round}`;
+            view.innerHTML += `<h2 class="text-3xl font-bold text-center mb-4 text-cyan-300">${stageTitle}</h2>`;
+            
+            // Add score legend
+            const threshold = state.config?.points_to_advance || 70;
+            view.innerHTML += `
+                <div class="bg-gray-800 p-4 rounded-lg mb-6 max-w-2xl mx-auto">
+                    <h3 class="text-lg font-semibold text-center mb-3 text-gray-300">Score Legend</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-green-700 rounded"></div>
+                            <span class="text-gray-300">Winner (${threshold}+ points & Top 2)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-gray-700 rounded"></div>
+                            <span class="text-gray-300">Not Winner (< ${threshold} points or Bottom 2)</span>
+                        </div>
+                        <div class="text-gray-400 text-center md:col-span-2">
+                            <span class="font-semibold">Note:</span> Each round is independent - only top 2 players per match advance
+                        </div>
+                    </div>
+                </div>`;
+            
+            const matchesContainer = document.createElement('div');
+            matchesContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6';
+            bracket.matches.forEach((match) => {
+                matchesContainer.appendChild(createSwissMatchElement(match, state));
+            });
+            view.appendChild(matchesContainer);
+
+            if (bracket.round < 5) {
+                view.innerHTML += `<div class="mt-8 flex gap-4">
+                    <button id="advance-swiss-btn" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg">Finalize Scores & Advance to Round ${bracket.round + 1}</button>
+                    <button id="go-back-swiss-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg text-lg">Go Back to Round ${bracket.round - 1}</button>
+                </div>`;
+            } else {
+                view.innerHTML += `<div class="mt-8 flex gap-4">
+                    <p class="flex-1 text-center text-green-400 font-bold text-2xl">Final Round Complete!</p>
+                    <button id="go-back-swiss-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg text-lg">Go Back to Round ${bracket.round - 1}</button>
+                </div>`;
+            }
+            addSwissUpdateListeners(state);
+        }
+        
+        function createSwissMatchElement(match, state) {
+            
+            const matchEl = document.createElement('div');
+            matchEl.className = `match-card bg-gray-800 p-3 rounded-lg shadow-md border border-gray-700`;
+            matchEl.dataset.matchId = match.id;
+            
+            // Get the threshold from tournament config (default to 70 if not set)
+            const threshold = state.config?.points_to_advance || 70;
+            
+            // Sort players by score to determine top 2 for this match
+            const sortedPlayers = [...match.players].sort((a, b) => (b.score || 0) - (a.score || 0));
+            const top2Players = sortedPlayers.slice(0, 2);
+            
+            let playersHtml = match.players.map((player) => {
+                const currentScore = player.score || 0;
+                const meetsThreshold = currentScore >= threshold;
+                const isTop2 = top2Players.includes(player);
+                const displayName = player.display_bracket_name || player.trackmania_name || player.name || 'TBD';
+                
+                // Show as qualified if they meet threshold AND are in top 2
+                const isQualified = meetsThreshold && isTop2;
+                
+                return `
+                <div class="flex items-center justify-between p-4 rounded-lg ${isQualified ? 'bg-green-700' : 'bg-gray-700'} min-h-[60px]">
+                    <div class="flex items-center flex-1 min-w-0">
+                        <span class="text-sm font-bold text-gray-400 mr-3 w-6 text-center flex-shrink-0">${player.seed || ''}</span>
+                        <span class="font-semibold text-base truncate" title="${displayName}">${displayName}</span>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <input type="number" class="w-20 bg-gray-600 text-white text-center rounded p-2 text-sm score-input" value="${currentScore}">
+                        <span class="text-sm text-gray-300">points</span>
+                        <span class="text-sm font-bold ${isQualified ? 'text-green-400' : 'text-gray-400'}">${isQualified ? 'Winner' : 'Not Winner'}</span>
+                    </div>
+                </div>`;
+            }).join('<div class="my-3"></div>');
+            
+            matchEl.innerHTML = `<h4 class="text-lg font-bold text-center text-gray-400 mb-4">${match.name}</h4><div class="space-y-3">${playersHtml}</div><button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-sm update-swiss-btn" data-match-id="${match.id}">Update Scores</button>`;
+            return matchEl;
+        }
+
+        function addUpdateListeners(state) {
+            document.querySelectorAll('.update-match-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const target = e.currentTarget;
+                    const scores = Array.from(document.querySelectorAll(`.score-input[data-bracket='${target.dataset.bracket}'][data-round='${target.dataset.round}'][data-match='${target.dataset.match}']`)).map(input => parseInt(input.value) || 0);
+                    const newState = await mainApi.updateMatch(target.dataset.bracket, parseInt(target.dataset.round, 10), parseInt(target.dataset.match, 10), scores);
+                    renderMain(newState);
+                });
+            });
+        }
+
+        function addSwissUpdateListeners(state) {
+            document.querySelectorAll('.update-swiss-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const matchId = e.currentTarget.dataset.matchId;
+                    const matchCard = e.currentTarget.closest('.match-card');
+                    const scoreInputs = matchCard.querySelectorAll('.score-input');
+                    const scores = Array.from(scoreInputs).map(input => parseInt(input.value) || 0);
+                    
+                    const newState = await mainApi.updateMatch('swiss', state.bracket.round - 1, matchId, scores);
+                    // Re-render the view to show updated colors immediately
+                    renderMain(newState);
+                });
+            });
+
+            const advanceBtn = document.getElementById('advance-swiss-btn');
+            if(advanceBtn) {
+                advanceBtn.addEventListener('click', async () => {
+                    const newState = await mainApi.advanceSwissStage();
+                    renderMain(newState);
+                });
+            }
+
+            const goBackBtn = document.getElementById('go-back-swiss-btn');
+            if(goBackBtn) {
+                goBackBtn.addEventListener('click', async () => {
+                    if(confirm(`Are you sure you want to go back to Round ${state.bracket.round - 1}? This will reset all scores for the current round.`)) {
+                        try {
+                            const newState = await mainApi.goBackSwiss();
+                            renderMain(newState);
+                        } catch (error) {
+                            alert('Error going back: ' + (error.message || 'Unknown error'));
+                        }
+                    }
+                });
+            }
+        }
+        
+        startSeedingBtn.addEventListener('click', async () => {
+            const players = seedingPlayersInput.value.split('\n').filter(p => p.trim());
+            const maps = mapsInput.value.split('\n').filter(m => m.trim());
+            if (players.length > 0 && maps.length > 0) {
+                const newState = await seedingApi.start(players, maps);
+                renderSeeding(newState);
+            }
+        });
+        resetSeedingBtn.addEventListener('click', async () => {
+            if(confirm('Reset Seeding Tournament?')) { await seedingApi.reset(); location.reload(); }
+        });
+        updateSeedingConfigBtn.addEventListener('click', async () => {
+            const payload = {
+                players_to_advance: parseInt(seedingAdvanceInput.value, 10),
+                colors: {
+                    header: seedingHeaderColorInput.value,
+                    text: seedingTextColorInput.value,
+                    score: seedingScoreColorInput.value
+                }
+            };
+            await seedingApi.updateConfig(payload);
+            alert('Seeding config updated!');
+        });
+
+        // Add player button event listener
+        addPlayerBtn.addEventListener('click', addPlayer);
+
+        function renderSeeding(state) {
+            if (state.is_started) {
+                seedingSetupSection.classList.add('hidden');
+                seedingScoreSection.classList.remove('hidden');
+                renderSeedingScoreEntry(state);
+            } else {
+                seedingSetupSection.classList.remove('hidden');
+                seedingScoreSection.classList.add('hidden');
+                seedingPlayersInput.value = state.players.join('\n');
+                mapsInput.value = state.maps.join('\n');
+            }
+            seedingAdvanceInput.value = state.config?.players_to_advance || 8;
+            if(state.config?.colors){
+                seedingHeaderColorInput.value = state.config.colors.header;
+                seedingTextColorInput.value = state.config.colors.text;
+                seedingScoreColorInput.value = state.config.colors.score;
+            }
+        }
+
+        function renderSeedingScoreEntry(state) {
+            seedingScoreSection.innerHTML = '';
+            for (const groupName in state.groups) {
+                const players = state.groups[groupName];
+                if (players.length === 0) continue;
+
+                let groupHtml = `<h2 class="text-3xl font-bold text-center mb-4 text-teal-300">${groupName.replace('group', 'Group ')}</h2>`;
+                
+                state.maps.forEach(mapName => {
+                    let tableHtml = `<h3 class="text-xl font-semibold mt-6 mb-2">${mapName}</h3>
+                    <div class="overflow-x-auto"><table class="w-full text-sm text-left text-gray-300">
+                        <thead class="text-xs uppercase bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Player</th>
+                                <th scope="col" class="px-6 py-3 text-center">Final Score</th>
+                            </tr>
+                        </thead><tbody>`;
+
+                    players.forEach(player => {
+                        const score = state.scores[player]?.[mapName] || 0;
+                        tableHtml += `<tr class="border-b border-gray-700">
+                            <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">${player}</th>
+                            <td class="px-6 py-2"><input type="number" class="w-24 bg-gray-600 text-center rounded p-1 score-input" value="${score}" data-player="${player}" data-map="${mapName}"></td>
+                        </tr>`;
+                    });
+
+                    tableHtml += `</tbody></table></div>`;
+                    groupHtml += tableHtml;
+                });
+                seedingScoreSection.innerHTML += groupHtml;
+            }
+            addSeedingScoreInputListeners();
+        }
+
+        function addSeedingScoreInputListeners() {
+            document.querySelectorAll('#seeding-score-section .score-input').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const { player, map } = e.target.dataset;
+                    const score = e.target.value;
+                    seedingApi.updateScore(player, map, score);
+                });
+            });
+        }
+
+        async function init() {
+            const mainState = await mainApi.getStatus();
+            renderMain(mainState);
+            const seedingState = await seedingApi.getStatus();
+            renderSeeding(seedingState);
+            
+            // Initialize player forms if not already done
+            if (playersContainer.children.length === 0) {
+                initializePlayerForms();
+            }
+        }
+        init();
+    </script>
+</body>
+</html>

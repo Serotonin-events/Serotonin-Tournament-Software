@@ -1,0 +1,112 @@
+<!-- templates/timer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serotonin Tournament Software - Timer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@700&family=Roboto+Condensed:wght@700&family=MuseoModerno:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: transparent;
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
+        }
+        #timer-wrapper {
+            position: absolute;
+            padding: 2rem;
+        }
+        #time-display {
+            font-weight: 700;
+            font-size: 9rem;
+            letter-spacing: -0.05em;
+            text-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="timer-wrapper">
+        <div id="time-display">00:00</div>
+    </div>
+    <script>
+        const timeDisplay = document.getElementById('time-display');
+        const timerWrapper = document.getElementById('timer-wrapper');
+        
+        let countdown;
+        let timeInSeconds;
+        let currentSettings = {};
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeInSeconds / 60);
+            const seconds = timeInSeconds % 60;
+            timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function applySettings(settings) {
+            // Only update if settings have actually changed to prevent the timer from resetting every 3 seconds.
+            if (JSON.stringify(settings) === JSON.stringify(currentSettings)) {
+                return;
+            }
+            currentSettings = settings;
+            
+            // Stop any existing timer before applying new settings
+            clearInterval(countdown);
+            countdown = null;
+
+            // Apply styles
+            timeDisplay.style.fontFamily = `'${settings.font}', sans-serif`;
+            timeDisplay.style.color = settings.color;
+            
+            // Apply position
+            timerWrapper.style.top = 'auto';
+            timerWrapper.style.bottom = 'auto';
+            timerWrapper.style.left = 'auto';
+            timerWrapper.style.right = 'auto';
+            timerWrapper.style.transform = 'none';
+
+            switch (settings.position) {
+                case 'top-left': timerWrapper.style.top = '0'; timerWrapper.style.left = '0'; break;
+                case 'top-right': timerWrapper.style.top = '0'; timerWrapper.style.right = '0'; break;
+                case 'bottom-left': timerWrapper.style.bottom = '0'; timerWrapper.style.left = '0'; break;
+                case 'bottom-right': timerWrapper.style.bottom = '0'; timerWrapper.style.right = '0'; break;
+                case 'center': timerWrapper.style.top = '50%'; timerWrapper.style.left = '50%'; timerWrapper.style.transform = 'translate(-50%, -50%)'; break;
+            }
+
+            // Set time and start the countdown automatically
+            timeInSeconds = settings.minutes * 60;
+            updateDisplay();
+            startTimer();
+        }
+
+        function startTimer() {
+            if (countdown) return; // Don't start if already running
+            countdown = setInterval(() => {
+                if (timeInSeconds <= 0) {
+                    clearInterval(countdown);
+                    countdown = null;
+                    timeDisplay.textContent = "00:00";
+                    return;
+                }
+                timeInSeconds--;
+                updateDisplay();
+            }, 1000);
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/status');
+                const state = await response.json();
+                applySettings(state.timer);
+            } catch (error) {
+                console.error("Failed to fetch timer status:", error);
+            }
+        }
+
+        // Fetch settings immediately on load, then poll for any changes from the control panel
+        fetchData();
+        setInterval(fetchData, 3000);
+    </script>
+</body>
+</html>

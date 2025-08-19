@@ -1,0 +1,91 @@
+{
+    "players": [
+        {
+            "trackmania_id": "PLAYER_1_TRACKMANIA_ID",
+            "display_bracket_name": "Player 1",
+            "trackmania_name": "player1",
+            "seed": 1
+        },
+        {
+            "trackmania_id": "PLAYER_2_TRACKMANIA_ID",
+            "display_bracket_name": "Player 2",
+            "trackmania_name": "player2",
+            "seed": 2
+        }
+    ],
+    "bracket": {
+        "upper": {
+            "rounds": [
+                {
+                    "name": "Upper Round 1",
+                    "matches": [
+                        {
+                            "id": "UB-R1M1",
+                            "players": [
+                                {
+                                    "trackmania_id": "PLAYER_1_TRACKMANIA_ID",
+                                    "display_bracket_name": "Player 1",
+                                    "trackmania_name": "player1",
+                                    "seed": 1,
+                                    "score": 0
+                                },
+                                {
+                                    "trackmania_id": "PLAYER_2_TRACKMANIA_ID",
+                                    "display_bracket_name": "Player 2",
+                                    "trackmania_name": "player2",
+                                    "seed": 2,
+                                    "score": 0
+                                }
+                            ],
+                            "winners": [],
+                            "is_complete": false
+                        }
+                    ]
+                }
+            ]
+        },
+        "lower": {
+            "rounds": []
+        },
+        "grand_final": {
+            "name": "Grand Final",
+            "matches": [],
+            "winners": [],
+            "is_complete": false
+        }
+    },
+    "config": {
+        "points_to_advance": 70,
+        "points_for_finals": 100
+    },
+    "info": {
+        "tournament_name": "Your Tournament Name",
+        "logo_url": "",
+        "colors": {
+            "text": "#f0f0f0",
+            "background": "#000000"
+        },
+        "bracket_styles": {
+            "upper": {
+                "title": "UPPER BRACKET",
+                "color": "#00FFFF"
+            },
+            "lower": {
+                "title": "LOWER BRACKET",
+                "color": "#FFA500"
+            },
+            "final": {
+                "title": "GRAND FINAL",
+                "color": "#FFD700"
+            }
+        }
+    },
+    "timer": {
+        "minutes": 10,
+        "font": "Orbitron",
+        "color": "#8B5CF6",
+        "position": "center"
+    },
+    "is_started": false,
+    "bracket_type": "double_elimination"
+}
